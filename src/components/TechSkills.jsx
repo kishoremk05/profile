@@ -23,7 +23,7 @@ const TechSkills = ({ setShowTech }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768); // Adjust for tablets & mobile
+      setIsMobile(window.innerWidth < 768);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -31,28 +31,27 @@ const TechSkills = ({ setShowTech }) => {
   }, []);
 
   return (
-    <div className="relative flex flex-col justify-center items-center min-h-screen w-full px-4 sm:px-0 bg-transparent ">
+    <div className="relative flex flex-col justify-center items-center min-h-screen w-full px-4 sm:px-0 bg-transparent">
       {/* Center Button */}
       <motion.div
-  onClick={() => setExploded(!exploded)}
-  className="absolute z-10 flex flex-col justify-center items-center w-24 h-24 sm:w-28 sm:h-28
-  bg-black text-white rounded-full text-center font-bold text-sm sm:text-xl
-  border border-gray-600 cursor-pointer shadow-[0_0_20px_rgba(255,255,255,0.4)]
-  ring-2 ring-white/30 backdrop-blur-sm animate-pulse transition-transform duration-300 ease-in-out"
-  whileHover={{
-    scale: 1.2,
-    boxShadow: "0px 0px 40px rgba(255, 255, 255, 0.9)",
-    textShadow: "0 0 10px rgba(255, 255, 255, 0.8)",
-  }}
->
-  <span className="tracking-wide">MY TECH</span>
-  <span className="tracking-wide">SKILLS</span>
-</motion.div>
-
+        onClick={() => setExploded(!exploded)}
+        className="absolute z-10 flex flex-col justify-center items-center w-24 h-24 sm:w-28 sm:h-28
+        bg-black text-white rounded-full text-center font-bold text-sm sm:text-xl
+        border border-gray-600 cursor-pointer shadow-[0_0_20px_rgba(255,255,255,0.4)]
+        ring-2 ring-white/30 backdrop-blur-sm animate-pulse transition-transform duration-300 ease-in-out"
+        whileHover={{
+          scale: 1.2,
+          boxShadow: "0px 0px 40px rgba(255, 255, 255, 0.9)",
+          textShadow: "0 0 10px rgba(255, 255, 255, 0.8)",
+        }}
+      >
+        <span className="tracking-wide">MY TECH</span>
+        <span className="tracking-wide">SKILLS</span>
+      </motion.div>
 
       {/* Skill Bubbles */}
       {skillsData.map((skill, index) => {
-        const scaleFactor = isMobile ? 0.6 : 1; // Scales down bubbles for mobile
+        const scaleFactor = isMobile ? 0.6 : 1;
         const x = skill.position.x * scaleFactor;
         const y = skill.position.y * scaleFactor;
 
