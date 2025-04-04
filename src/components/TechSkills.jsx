@@ -1,88 +1,107 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
-const skills = [
-  "SQL",
-  "HTML",
-  "CSS",
-  "JavaScript",
-  "React",
-  "Figma",
-  "Git",
-  "Python",
+// Skill data with positions (desktop)
+const skillsData = [
+  { name: "CSS", position: { x: -220, y: -140 } },
+  { name: "OS", position: { x: -40, y: -220 } },
+  { name: "FIGMA", position: { x: 220, y: -160 } },
+  { name: "GIT", position: { x: 80, y: -140 } },
+  { name: "JS", position: { x: 180, y: -50 } },
+  { name: "SQL", position: { x: -250, y: 20 } },
+  { name: "React", position: { x: -120, y: -60 } },
+  { name: "Python", position: { x: -140, y: 60 } },
+  { name: "Django", position: { x: 120, y: 90 } },
+  { name: "CLOUD", position: { x: 250, y: 40 } },
+  { name: "DBMS", position: { x: -240, y: 140 } },
+  { name: "HTML", position: { x: -70, y: 150 } },
 ];
 
-const generateRandomPosition = (index) => {
-  // Define a radius for the scatter effect
-  const radius =
-    window.innerWidth < 640
-      ? 70 + Math.random() * 20
-      : 130 + Math.random() * 50; // Increased radius for more space
-
-  // Center the middle skill (index 3) at (0,0)
-  if (index === Math.floor(skills.length / 2)) {
-    return { x: 0, y: 0 }; // Center the middle skill
-  }
-
-  // For other skills, scatter them randomly around the center with more space between
-  const angle = (index / skills.length) * (2 * Math.PI) + Math.random() * 0.6; // Slightly larger randomness in angle
-
-  // Apply an offset to prevent the skills from overlapping
-  const spacingOffset = 10; // Adjust this value for more/less spacing
-
-  return {
-    x: (radius + spacingOffset) * Math.cos(angle), // X-position based on the angle
-    y: (radius + spacingOffset) * Math.sin(angle), // Y-position based on the angle
-  };
-};
-
 const TechSkills = ({ setShowTech }) => {
+  const [exploded, setExploded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768); // Adjust for tablets & mobile
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="relative flex flex-col justify-center items-center max-w-md sm:max-w-lg mx-auto p-6 bg-white/10 dark:bg-black/40 
-      shadow-2xl rounded-3xl bg-opacity-40 backdrop-blur-xl border border-gray-400 dark:border-gray-600 mb-5"
-    >
-      {/* Title */}
-      <h1 className="text-3xl sm:text-xl font-extrabold text-gray-900 dark:text-purple-300 text-center mb-6 sm:mb-8">
-        My Tech Skills
-      </h1>
+    <div className="relative flex flex-col justify-center items-center min-h-screen w-full px-4 sm:px-0 bg-transparent ">
+      {/* Center Button */}
+      <motion.div
+  onClick={() => setExploded(!exploded)}
+  className="absolute z-10 flex flex-col justify-center items-center w-24 h-24 sm:w-28 sm:h-28
+  bg-black text-white rounded-full text-center font-bold text-sm sm:text-xl
+  border border-gray-600 cursor-pointer shadow-[0_0_20px_rgba(255,255,255,0.4)]
+  ring-2 ring-white/30 backdrop-blur-sm animate-pulse transition-transform duration-300 ease-in-out"
+  whileHover={{
+    scale: 1.2,
+    boxShadow: "0px 0px 40px rgba(255, 255, 255, 0.9)",
+    textShadow: "0 0 10px rgba(255, 255, 255, 0.8)",
+  }}
+>
+  <span className="tracking-wide">MY TECH</span>
+  <span className="tracking-wide">SKILLS</span>
+</motion.div>
+
 
       {/* Skill Bubbles */}
-      <div className="relative w-full sm:w-[400px] h-[250px] sm:h-[300px] flex justify-center items-center mb-8">
-        {skills.map((skill, index) => {
-          const position = generateRandomPosition(index);
-          return (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-              animate={{ opacity: 1, scale: 1, x: position.x, y: position.y }}
-              transition={{
-                duration: 0.6,
-                delay: index * 0.1,
-                ease: "easeOut",
-              }}
-              className="absolute flex justify-center items-center w-14 sm:w-16 h-14 sm:h-16 bg-white dark:bg-gray-800 text-black dark:text-white 
-              rounded-full shadow-lg hover:scale-110 cursor-pointer font-medium text-md border border-gray-300 dark:border-gray-500
-              transition-all duration-300 hover:shadow-[0_0_20px_#FF00FF] hover:text-purple-300"
-            >
-              {skill}
-            </motion.div>
-          );
-        })}
-      </div>
+      {skillsData.map((skill, index) => {
+        const scaleFactor = isMobile ? 0.6 : 1; // Scales down bubbles for mobile
+        const x = skill.position.x * scaleFactor;
+        const y = skill.position.y * scaleFactor;
+
+        const size = isMobile
+          ? "w-14 h-14 text-[10px] p-1"
+          : "w-20 h-20 text-sm sm:w-24 sm:h-24 sm:text-base";
+
+        return (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 0.3, x: 0, y: 0 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              x: exploded ? x : 0,
+              y: exploded ? y : 0,
+            }}
+            transition={{
+              duration: 0.6,
+              delay: index * 0.05,
+              type: "spring",
+              stiffness: 120,
+              damping: 12,
+            }}
+            whileHover={{
+              scale: 1.3,
+              rotate: Math.random() * 10 - 5,
+              boxShadow: "0px 0px 20px rgba(255, 255, 255, 0.85)",
+            }}
+            className={`absolute flex justify-center m-2 items-center ${size}
+              bg-white text-black rounded-full font-semibold 
+              border border-gray-300 shadow-md transition-all backdrop-blur-md`}
+          >
+            {skill.name}
+          </motion.div>
+        );
+      })}
 
       {/* Back Button */}
-      <button
+      <motion.button
         onClick={() => setShowTech(false)}
-        className="mt-6 bg-gradient-to-r from-pink-500 to-red-600 px-6 py-2 rounded-full text-white font-bold 
-        hover:scale-105 hover:shadow-lg transition-all duration-300"
+        className="absolute bottom-8 sm:bottom-12 px-6 py-2 bg-gray-800 text-white 
+        rounded-full border border-gray-500 text-sm sm:text-lg hover:bg-gray-700
+        transition duration-300 ease-in-out shadow-md"
+        whileHover={{ scale: 1.1, boxShadow: "0px 0px 15px rgba(255, 255, 255, 0.6)" }}
       >
-        Back
-      </button>
-    </motion.div>
+        ← Back
+      </motion.button>
+    </div>
   );
 };
 
